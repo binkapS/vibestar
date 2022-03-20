@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1962962962962963" />
+        <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.20615384615384616" />
+        <entry key="app/src/main/res/drawable/ic_round_album_24.xml" value="0.14074074074074075" />
+        <entry key="app/src/main/res/drawable/ic_round_favorite_24.xml" value="0.16962025316455695" />
+        <entry key="app/src/main/res/drawable/ic_round_online_selected_24.xml" value="0.13094462540716612" />
+        <entry key="app/src/main/res/drawable/ic_round_online_subscriptions_24.xml" value="0.13094462540716612" />
+        <entry key="app/src/main/res/drawable/ic_round_play_arrow_24.xml" value="0.15092592592592594" />
+        <entry key="app/src/main/res/drawable/ic_round_play_circle_filled_24.xml" value="0.14074074074074075" />
+        <entry key="app/src/main/res/drawable/ic_round_search_24.xml" value="0.13094462540716612" />
+        <entry key="app/src/main/res/drawable/ic_round_settings_24.xml" value="0.13094462540716612" />
+        <entry key="app/src/main/res/drawable/ic_round_skip_next_24.xml" value="0.15092592592592594" />
+        <entry key="app/src/main/res/drawable/ic_round_skip_previous_24.xml" value="0.15092592592592594" />
+        <entry key="app/src/main/res/drawable/ic_round_vibe_star_24.xml" value="0.16962025316455695" />
+        <entry key="app/src/main/res/drawable/ic_twotone_folder_selected_open_24.xml" value="0.13094462540716612" />
+        <entry key="app/src/main/res/drawable/ic_twotone_online_selected_24.xml" value="0.13094462540716612" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.12084690553745929" />
+        <entry key="app/src/main/res/layout/activity_music_control_screen.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_music_player_screen.xml" value="0.13425925925925927" />
+        <entry key="app/src/main/res/layout/activity_search_screen.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/activity_songs_screen.xml" value="0.10277777777777777" />
+        <entry key="app/src/main/res/layout/albums_grid_recycler_view.xml" value="0.11574074074074074" />
+        <entry key="app/src/main/res/layout/artists_linear_recycler_view.xml" value="0.13703703703703704" />
+        <entry key="app/src/main/res/layout/fragment_albums.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_artist.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_local.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_music_p_layer.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_online.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_play_lists.xml" value="0.12129629629629629" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.11282051282051282" />
+        <entry key="app/src/main/res/layout/fragment_slider.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_songs.xml" value="0.1388888888888889" />
+        <entry key="app/src/main/res/layout/fragment_songs_control.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/fragment_sub_songs.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/local_music_linear_recycler_view.xml" value="0.11666666666666667" />
+        <entry key="app/src/main/res/layout/music_control_screen_linear_recycler_view.xml" value="0.18646408839779005" />
+        <entry key="app/src/main/res/layout/notification_view.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/notification_view_big.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/notification_view_small.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/playlist_linear_recycler_view.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/layout/rename_file_text_input_layout.xml" value="0.25" />
+        <entry key="app/src/main/res/menu/music_control_screen_options_menu.xml" value="0.13518518518518519" />
+        <entry key="app/src/main/res/menu/music_options_pop_up_menu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/player_screen_bottom_menu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/tool_bar_options_menu.xml" value="0.15854700854700854" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.16962025316455695" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

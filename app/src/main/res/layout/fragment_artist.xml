@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:context=".fragments.ArtistsFragment">
+
+   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+       android:id="@+id/artists_fragment_swipe_refresh"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/artists_fragment_recycler"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          />
+   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+      <TextView
+       android:id="@+id/artists_fragment_no_item_found"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="No Artists Found"
+       android:textStyle="bold"
+       android:layout_gravity="center"
+       android:textAlignment="center"
+       android:textColor="?attr/colorPrimaryVariant"
+       android:textSize="20sp"
+       />
+
+</FrameLayout>

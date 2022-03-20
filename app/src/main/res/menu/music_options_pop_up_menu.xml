@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/music_options_play_now" android:title="Play Now" android:icon="@drawable/ic_round_play_circle_outline_24"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/music_options_play_next" android:title="Play Next" android:icon="@drawable/ic_round_skip_next_24"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/music_options_add_to_queue" android:title="Add to Queue" android:icon="@drawable/ic_round_queue_music_24"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/music_options_set_ring_tone" android:title="Set as ringtone" android:icon="@drawable/ic_round_notifications_24"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/music_options_add_to_playList" android:title="Add to playlist" android:icon="@drawable/ic_round_playlist_add_24"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/music_options_favorite" android:title="Favourite" android:icon="@drawable/ic_round_favorite_24"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/music_options_delete" android:title="Delete" android:icon="@drawable/ic_round_delete_24"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/music_options_file_info" android:title="File Info" android:icon="@drawable/ic_round_info_24"
+        tools:ignore="HardcodedText" />
+</menu>

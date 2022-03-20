@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Library" android:icon="@drawable/ic_round_library_music_24"
+        tools:ignore="HardcodedText" android:enabled="true" android:id="@+id/player_screen_local_music_icon"
+        />
+<!--    <item android:title="Online" android:icon="@drawable/ic_round_online_subscriptions_24"-->
+<!--        tools:ignore="HardcodedText" android:enabled="true" android:id="@+id/player_screen_online_music_icon"-->
+<!--        />-->
+    <item android:title="Profile" android:icon="@drawable/ic_round_person_24"
+        tools:ignore="HardcodedText" android:enabled="true" android:id="@+id/player_screen_profile_icon"
+        />
+</menu>
