@@ -11,7 +11,7 @@
         tools:ignore="HardcodedText" />
     <item android:id="@+id/music_options_add_to_playList" android:title="Add to playlist" android:icon="@drawable/ic_round_playlist_add_24"
         tools:ignore="HardcodedText" />
-    <item android:id="@+id/music_options_favorite" android:title="Favourite" android:icon="@drawable/ic_round_favorite_24"
+    <item android:id="@+id/music_options_favorite" android:title="Add to favorites" android:icon="@drawable/ic_round_favorite_24"
         tools:ignore="HardcodedText" />
     <item android:id="@+id/music_options_delete" android:title="Delete" android:icon="@drawable/ic_round_delete_24"
         tools:ignore="HardcodedText" />

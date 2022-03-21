@@ -71,13 +71,12 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
         holder.songName.setText(songData.getTitle());
         holder.artistAlbumName.setText(songData.getArtist().concat(" - ").concat(songData.getAlbum()));
         holder.optionsButton.setOnClickListener(view -> {
-            PopupMenu popupMenu = new PopupMenu(holder.itemView.getContext(), view);
+            PopupMenu popupMenu = new PopupMenu(holder.itemView.getContext(), view, Gravity.END);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 popupMenu.setForceShowIcon(true);
             }
             popupMenu.inflate(R.menu.music_options_pop_up_menu);
-            popupMenu.setGravity(Gravity.END);
-            popupMenu.setOnMenuItemClickListener(menuItem -> menuClickListener(menuItem, songData, position, holder));
+            popupMenu.setOnMenuItemClickListener(menuItem -> menuClickListener(menuItem, songData, holder.getAdapterPosition(), holder));
             popupMenu.show();
         });
         holder.itemView.setOnClickListener(view -> sendSong(songData, position, view.getContext()));
@@ -129,7 +128,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
             playlistsData.createPlaylist(Universal.FAVORITE_PLAYLIST);
         }
         if (!playlistsData.existsInPlaylist(songData) && playlistsData.addToPlaylist(songData)){
-            playlistsData.updatePlaylist(Universal.FAVORITE_PLAYLIST, 1, true);
             Toast.makeText(context, songData.getTitle().concat(" Added to ").concat(Universal.FAVORITE_PLAYLIST), Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(context, "Already Exists ".concat(Universal.FAVORITE_PLAYLIST), Toast.LENGTH_SHORT).show();

@@ -3,8 +3,6 @@ package ng.com.binkap.vibestar.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import ng.com.binkap.vibestar.models.SongsModel;
 
@@ -29,11 +27,12 @@ public class PlaylistsData extends Playlists {
         contentValues.put("dateAdded", song.getDateAdded());
         contentValues.put("lastModified", song.getLastModified());
         contentValues.put("duration", song.getDuration());
+        updatePlaylist(playlist, 1, true);
         return this.getWritableDatabase().insert(playlist, null, contentValues) != FAILED_QUERY;
     }
 
     public boolean removeFromPlaylist(SongsModel song){
-        if (existsInPlaylist(song)){
+        if (existsInPlaylist(song) && updatePlaylist(playlist, 1, false)){
             return this.getWritableDatabase().delete(playlist, "path = ?", new String[]{song.getPath()}) != FAILED_QUERY;
         }
         return false;

@@ -154,6 +154,8 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
                     prepareMedia();
                     break;
                 case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
+                    pauseMedia(false);
+                    break;
                 case PLAY_PAUSE_MEDIA:
                     handlePLayPause();
                     break;
@@ -267,10 +269,7 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
                 }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
-                pauseMedia(false);
-                break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                reduceMediaVolume();
                 pauseMedia(false);
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
@@ -655,9 +654,11 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
     }
 
     private void pauseMedia(boolean fromUser){
-        mediaPlayer.pause();
-        pausedByUser = fromUser;
-        buildNotification(PlaybackState.STATE_PAUSED);
+        if (mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+            pausedByUser = fromUser;
+            buildNotification(PlaybackState.STATE_PAUSED);
+        }
     }
 
     public void stopMedia(){
@@ -807,10 +808,8 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
         }
         if (playlistsData.existsInPlaylist(currentSong)){
             playlistsData.removeFromPlaylist(currentSong);
-            playlistsData.updatePlaylist(Universal.FAVORITE_PLAYLIST, 1, false);
         }else {
             playlistsData.addToPlaylist(currentSong);
-            playlistsData.updatePlaylist(Universal.FAVORITE_PLAYLIST, 1, true);
         }
         if (MusicControlScreen.getMusicControlScreen() != null){
             MusicControlScreen.getMusicControlScreen().updateFavoriteButton();

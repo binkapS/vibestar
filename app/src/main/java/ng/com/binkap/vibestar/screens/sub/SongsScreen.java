@@ -195,7 +195,7 @@ public class SongsScreen extends AppCompatActivity {
         if (songList.size() > 0){
             recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             if (usingPLayList){
-                recyclerView.setAdapter(new PlaylistsSongsAdapter(songList));
+                recyclerView.setAdapter(new PlaylistsSongsAdapter(songList, playlist));
             }else {
                 recyclerView.setAdapter(new SongsAdapter(songList));
             }
@@ -245,10 +245,23 @@ public class SongsScreen extends AppCompatActivity {
                 header.setBackgroundColor(getColor(R.color.colorPrimary));
                 applySettings();
             }
-        }else {
+        }else if (usingPLayList){
+            Utils.with(getApplicationContext())
+                    .load(songList.get(MusicPlayerService.random.nextInt(songList.size())).getThumbnail())
+                    .error(R.drawable.vibe_star_logo_transparent_bg)
+                    .build()
+                    .resize(1000, 600);
+            Palette palette = Palette.from(Utils.getBitmap())
+                    .generate();
+            int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
+                    getColor(R.color.colorPrimary), 0.51f);
+            int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
+                    getColor(R.color.colorPrimaryVariant), 0.2f);
+            mainBody.setBackgroundColor(darkenColor);
+            header.setBackgroundColor(darkenColor);
+            toolBar.setBackgroundColor(brightColor);
             headerImage.setBackgroundResource(R.drawable.vibe_star_logo_transparent_bg);
-            header.setBackgroundColor(getColor(R.color.colorPrimary));
-            applySettings();
+            setStatusBarColor(darkenColor);
         }
     }
 

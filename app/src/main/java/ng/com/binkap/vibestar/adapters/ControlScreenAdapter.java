@@ -42,9 +42,9 @@ public class ControlScreenAdapter extends RecyclerView.Adapter<ControlScreenAdap
         holder.songArtist.setText(songData.getArtist());
         holder.itemView.setOnClickListener(view -> sendSong(songData, position));
         holder.removeButton.setOnClickListener(view -> {
-            songList.remove(position);
+            songList.remove(holder.getAdapterPosition());
             MusicControlScreen.updatePlayList(songList);
-            notifyItemRemoved(songList.indexOf(songData));
+            notifyItemRemoved(holder.getAdapterPosition());
             MusicPlayerService.updateSongsList(songList, songList.indexOf(songData));
         });
         Glide.with(holder.itemView.getContext())
