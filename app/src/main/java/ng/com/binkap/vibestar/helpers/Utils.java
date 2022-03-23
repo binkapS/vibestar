@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.AsyncPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
@@ -15,7 +13,6 @@ import android.widget.ImageView;
 import androidx.core.graphics.ColorUtils;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 
 public class Utils {
 
@@ -68,8 +65,9 @@ public class Utils {
         return ColorUtils.blendARGB(color1, color2, fraction);
     }
 
-    public void into(ImageView imageView){
+    public Utils into(ImageView imageView){
         imageView.setImageBitmap(getBitmap());
+        return this;
     }
 
     private void buildBitmapFromResource(){

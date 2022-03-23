@@ -1,6 +1,7 @@
 package ng.com.binkap.vibestar.screens;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.ContentLoadingProgressBar;
@@ -8,15 +9,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.session.PlaybackState;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,6 +30,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -43,6 +48,7 @@ import ng.com.binkap.vibestar.R;
 import ng.com.binkap.vibestar.adapters.ViewPagerAdapter;
 import ng.com.binkap.vibestar.fragments.OnlineFragment;
 import ng.com.binkap.vibestar.fragments.ProfileFragment;
+import ng.com.binkap.vibestar.helpers.Universal;
 import ng.com.binkap.vibestar.helpers.UsageInfo;
 import ng.com.binkap.vibestar.helpers.UserSettings;
 import ng.com.binkap.vibestar.models.SongsModel;
@@ -148,6 +154,7 @@ public class MusicPlayerScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player_screen);
+        checkPermissions();
         musicPlayerScreen = this;
         setContentIds();
         if (!SONGS_LIST_INITIALIZED){
@@ -193,7 +200,10 @@ public class MusicPlayerScreen extends AppCompatActivity {
        } else {
            exitDialog.setVisibility(View.VISIBLE);
            navigationView.setVisibility(View.GONE);
-           exitButton.setOnClickListener(view -> super.onBackPressed());
+           exitButton.setOnClickListener(view -> {
+               finishAndRemoveTask();
+               super.onBackPressed();
+           });
        }
     }
 
@@ -264,7 +274,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
             exitDialog.setVisibility(View.GONE);
             navigationView.setVisibility(View.VISIBLE);
         });
-        checkPermissions();
     }
 
     public void loadSong(SongsModel song, int songPosition){
@@ -332,7 +341,35 @@ public class MusicPlayerScreen extends AppCompatActivity {
     }
 
     protected void checkPermissions(){
+        String[] permissions;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            permissions = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.MANAGE_EXTERNAL_STORAGE
+            };
+        }else {
+            permissions = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+        }
+        for (String permission: permissions) {
+            if (!hasPermission(permission)){
+                requestPermission(permission);
+            }
+        }
+    }
 
+    protected boolean hasPermission(String permission){
+        return checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    protected void requestPermission(String permission){
+        if (shouldShowRequestPermissionRationale(permission)){
+            Toast.makeText(getApplicationContext(), "Grant ".concat(permission).concat(" from Settings"), Toast.LENGTH_SHORT).show();
+        }else {
+            requestPermissions(new String[]{permission}, Universal.PERMISSIONS_REQUEST_CODE);
+        }
     }
 
     protected void handleBottomNavigation(int menuItemId){

@@ -119,7 +119,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
 
                 break;
         }
-        return false;
+        return true;
     }
 
     private void addToFavorite(SongsModel songData, Context context){

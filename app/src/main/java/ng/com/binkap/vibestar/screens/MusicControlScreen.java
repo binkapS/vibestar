@@ -94,7 +94,7 @@ public class MusicControlScreen extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (playListActive){
-            playListToggleClicked(-1);
+            playListToggleClicked();
         }else {
             super.onBackPressed();
         }
@@ -141,8 +141,8 @@ public class MusicControlScreen extends AppCompatActivity {
         playPauseButton.setOnClickListener(view -> sendBroadcast(new Intent(MusicPlayerService.PLAY_PAUSE_MEDIA)));
         prevButton.setOnClickListener(view -> sendBroadcast(new Intent(MusicPlayerService.PLAY_PREV_MEDIA)));
         playModeButton.setOnClickListener(view -> sendBroadcast(new Intent(MusicPlayerService.CHANGE_PLAY_MODE)));
-        playlistViewToggle.setOnClickListener(view -> playListToggleClicked(0));
-        playlistOpen.setOnClickListener(view -> playListToggleClicked(0));
+        playlistViewToggle.setOnClickListener(view -> playListToggleClicked());
+        playlistOpen.setOnClickListener(view -> playListToggleClicked());
         miniNextBtn.setOnClickListener(view -> sendBroadcast(new Intent(MusicPlayerService.PLAY_NEXT_MEDIA)));
         miniPlayPauseBtn.setOnClickListener(view -> sendBroadcast(new Intent(MusicPlayerService.PLAY_PAUSE_MEDIA)));
         favoriteButton.setOnClickListener(view -> sendBroadcast(new Intent(MusicPlayerService.TOGGLE_FAVORITE)));
@@ -179,22 +179,18 @@ public class MusicControlScreen extends AppCompatActivity {
             @Override
             public void onSwipeDown() {
                 super.onSwipeDown();
-                playListToggleClicked(-1);
+                playListToggleClicked();
             }
 
             @Override
             public void onSwipeUp() {
                 super.onSwipeUp();
-                playListToggleClicked(0);
+                playListToggleClicked();
             }
 
             @Override
             public void onTap() {
-                if (playListActive){
-                    playListToggleClicked(-1);
-                }else {
-                    playListToggleClicked(0);
-                }
+                playListToggleClicked();
             }
         });
 
@@ -217,19 +213,18 @@ public class MusicControlScreen extends AppCompatActivity {
         });
     }
 
-    private void playListToggleClicked(int action){
-        if (action == 0){
-            playlist.scrollToPosition(currentPLayList.indexOf(songInfo));
-            playListActive = true;
-            toggleVisibility(controlsBody, View.GONE);
-            toggleVisibility(playlist, View.VISIBLE);
-            toggleVisibility(miniPlayer, View.VISIBLE);
-
-        }else {
+    private void playListToggleClicked(){
+        if (playListActive){
             playListActive = false;
             toggleVisibility(playlist, View.GONE);
             toggleVisibility(miniPlayer,  View.GONE);
             toggleVisibility(controlsBody, View.VISIBLE);
+        }else {
+            playlist.smoothScrollToPosition(currentPLayList.indexOf(songInfo));
+            playListActive = true;
+            toggleVisibility(controlsBody, View.GONE);
+            toggleVisibility(playlist, View.VISIBLE);
+            toggleVisibility(miniPlayer, View.VISIBLE);
         }
     }
 
@@ -274,11 +269,19 @@ public class MusicControlScreen extends AppCompatActivity {
         songName.setText(songData.getTitle());
         songArtist.setText(songData.getArtist());
         miniSongName.setText(songData.getTitle());
-        Utils util = Utils.with(getApplicationContext())
+        playlist.smoothScrollToPosition(currentPLayList.indexOf(songData));
+        Glide.with(getApplicationContext())
+                .asBitmap()
+                .load(songData.getThumbnail())
+                .error(R.drawable.vibe_star_logo_transparent_bg)
+                .centerCrop()
+                .into(miniArtCover);
+        Utils.with(getApplicationContext())
                 .load(songData.getThumbnail())
                 .error(R.drawable.vibe_star_logo_transparent_bg)
                 .build()
-                .resize(1000, 1000);
+                .resize(1000, 1000)
+                .into(songArtCover);
         Palette palette = Palette.from(Utils.getBitmap())
                 .generate();
         int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
@@ -289,13 +292,7 @@ public class MusicControlScreen extends AppCompatActivity {
         setStatusBarColor(darkenColor);
         playPauseBackground.setCardBackgroundColor(brightColor);
         footer.setCardBackgroundColor(brightColor);
-        util.into(songArtCover);
-        Glide.with(getApplicationContext())
-                .asBitmap()
-                .load(songData.getThumbnail())
-                .error(R.drawable.vibe_star_logo_transparent_bg)
-                .centerCrop()
-                .into(miniArtCover);
+        updateFavoriteButton();
     }
 
     public void setStatusBarColor(int color){
