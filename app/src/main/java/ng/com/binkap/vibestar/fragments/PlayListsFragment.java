@@ -9,13 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.card.MaterialCardView;
 
@@ -37,6 +37,8 @@ public class PlayListsFragment extends Fragment {
     ImageView addPLayListButton;
 
     MaterialCardView header;
+
+    SwipeRefreshLayout swipeRefreshLayout;
 
     ArrayList<PlaylistsModel> playlists;
 
@@ -79,6 +81,7 @@ public class PlayListsFragment extends Fragment {
                     cursor.getInt(1));
             playlists.add(playlistsModel);
         }
+        cursor.close();
     }
 
     private void setContentIds(View view){
@@ -87,30 +90,29 @@ public class PlayListsFragment extends Fragment {
         playlistCount = view.findViewById(R.id.play_list_fragment_no_of_playlist);
         addPLayListButton = view.findViewById(R.id.play_list_fragment_add_playlist_button);
         header = view.findViewById(R.id.play_list_fragment_header_options);
+        swipeRefreshLayout = view.findViewById(R.id.play_list_fragment_swipe_refresh);
 
         setClickListeners();
     }
 
     private void setClickListeners(){
         addPLayListButton.setOnClickListener(view -> addPLayListClicked());
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            buildPlaylist();
+            bindRecycler();
+            swipeRefreshLayout.setRefreshing(false);
+        });
     }
 
     private void addPLayListClicked(){
-        String name = "Recently Played";
-        if (new Playlists(requireContext()).createPlaylist(name)){
-            bindRecycler();
-            Toast.makeText(getContext(), name + " Created Successfully", Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(getContext(), name + " Already Exists", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
     @SuppressLint("SetTextI18n")
     private void bindRecycler(){
-        PlaylistsAdapter adapter = new PlaylistsAdapter(playlists);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(adapter);
-        playlistCount.setText("Playlist (".concat(String.valueOf(adapter.getItemCount())).concat(")"));
+        recyclerView.setAdapter(new PlaylistsAdapter(playlists));
+        playlistCount.setText("Playlist (".concat(String.valueOf(playlists.size())).concat(")"));
     }
 
     private void applySettings(){

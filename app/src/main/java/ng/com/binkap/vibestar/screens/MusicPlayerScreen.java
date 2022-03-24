@@ -1,12 +1,9 @@
 package ng.com.binkap.vibestar.screens;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.ContentLoadingProgressBar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
@@ -20,13 +17,11 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.session.PlaybackState;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,7 +29,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.tabs.TabLayout;
@@ -46,11 +40,10 @@ import java.util.LinkedList;
 
 import ng.com.binkap.vibestar.R;
 import ng.com.binkap.vibestar.adapters.ViewPagerAdapter;
-import ng.com.binkap.vibestar.fragments.OnlineFragment;
-import ng.com.binkap.vibestar.fragments.ProfileFragment;
 import ng.com.binkap.vibestar.helpers.Universal;
 import ng.com.binkap.vibestar.helpers.UsageInfo;
 import ng.com.binkap.vibestar.helpers.UserSettings;
+import ng.com.binkap.vibestar.listeners.OnTouchListener;
 import ng.com.binkap.vibestar.models.SongsModel;
 import ng.com.binkap.vibestar.services.MusicPlayerService;
 
@@ -63,17 +56,13 @@ public class MusicPlayerScreen extends AppCompatActivity {
 
     public TextView miniPlayerSongName, miniPlayerSongArtist;
 
-    public ImageView songArtCover, playPauseButton, nextButton;
+    public ImageView songArtCover, playPauseButton, nextButton, profileIcon;
 
     ImageView searchButton;
 
     ConstraintLayout mainBody;
 
-    BottomNavigationView navigationView;
-
     ContentLoadingProgressBar progressBar;
-
-    FrameLayout frameLayout;
 
     RelativeLayout songsView;
 
@@ -81,21 +70,9 @@ public class MusicPlayerScreen extends AppCompatActivity {
 
     TabLayout tabLayout;
 
-    ProfileFragment profileFragment = ProfileFragment.newInstance();
-
-    OnlineFragment onlineFragment = OnlineFragment.newInstance();
-
-    Fragment currentFragment;
-
     RelativeLayout exitDialog, exitDialogBody;
 
     MaterialButton exitButton;
-
-    protected final int LOCAL_MUSIC_ICON = R.id.player_screen_local_music_icon;
-
-    protected final int ONLINE_MUSIC_ICON = 23456789;
-
-    protected final int PROFILE_ICON = R.id.player_screen_profile_icon;
 
     protected final String SERVICE_STATE = "ng.com.binkap.vibestar.SERVICE_STATE";
 
@@ -164,11 +141,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
             }
         }
         bindViewPager();
-        navigationView.setOnItemSelectedListener(item -> {
-           handleBottomNavigation(item.getItemId());
-           return false;
-       });
-       navigationView.setOnItemReselectedListener(item -> handleBottomNavigation(item.getItemId()));
        runOnUiThread(new Runnable() {
            @Override
            public void run() {
@@ -195,16 +167,11 @@ public class MusicPlayerScreen extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-       if (getSupportFragmentManager().getBackStackEntryCount() > 0){
-           super.onBackPressed();
-       } else {
-           exitDialog.setVisibility(View.VISIBLE);
-           navigationView.setVisibility(View.GONE);
-           exitButton.setOnClickListener(view -> {
-               finishAndRemoveTask();
-               super.onBackPressed();
-           });
-       }
+        exitDialog.setVisibility(View.VISIBLE);
+        exitButton.setOnClickListener(view -> {
+            finishAndRemoveTask();
+            super.onBackPressed();
+        });
     }
 
     public void scanLoadMusic(){
@@ -237,7 +204,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
 
     protected void setContentIds(){
         mainBody = findViewById(R.id.player_screen_main_body);
-        navigationView = findViewById(R.id.player_screen_bottom_navigation);
         miniPlayer = findViewById(R.id.player_screen_bottom_player);
         header = findViewById(R.id.player_screen_header);
         miniPlayerSongName = findViewById(R.id.mini_player_song_name);
@@ -246,7 +212,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
         songArtCover = findViewById(R.id.mini_player_song_art_cover);
         playPauseButton = findViewById(R.id.mini_player_play_pause_button);
         nextButton = findViewById(R.id.mini_player_next_button);
-        frameLayout = findViewById(R.id.player_screen_frame_layout);
         tabLayout = findViewById(R.id.player_screen_tab_layout);
         viewPager2 = findViewById(R.id.player_screen_view_pager2);
         songsView = findViewById(R.id.player_screen_songs_view);
@@ -255,9 +220,11 @@ public class MusicPlayerScreen extends AppCompatActivity {
         exitDialogBody = findViewById(R.id.music_player_screen_exit_dialog_body);
         exitButton = findViewById(R.id.exit_button);
         progressBar = findViewById(R.id.mini_player_song_progress_bar);
+        profileIcon = findViewById(R.id.player_screen_profile_icon);
         setClickListeners();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     protected void setClickListeners(){
         playPauseButton.setOnClickListener(view -> handlePlayPause());
         nextButton.setOnClickListener(view -> nextMedia());
@@ -265,15 +232,32 @@ public class MusicPlayerScreen extends AppCompatActivity {
             SearchScreen.loadToSearchFromList(allSongs);
             startActivity(new Intent(getApplicationContext(), SearchScreen.class));
         });
-        miniPlayer.setOnClickListener(view -> {
-            MusicControlScreen.setSongInfo(MusicPlayerService.currentSong);
-            MusicControlScreen.updatePlayList(MusicPlayerService.allSongsLIst);
-            startActivity(new Intent(getApplicationContext(), MusicControlScreen.class));
+        miniPlayer.setOnTouchListener(new OnTouchListener(getApplicationContext(), 50, 50) {
+            @Override
+            public void onSwipeRight() {
+                prevMedia();
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                nextMedia();
+            }
+
+            @Override
+            public boolean doubleTaped() {
+                handlePlayPause();
+                return true;
+            }
+
+            @Override
+            public void onTap() {
+                MusicControlScreen.setSongInfo(MusicPlayerService.currentSong);
+                MusicControlScreen.updatePlayList(MusicPlayerService.allSongsLIst);
+                startActivity(new Intent(getApplicationContext(), MusicControlScreen.class));
+            }
         });
-        exitDialog.setOnClickListener(view -> {
-            exitDialog.setVisibility(View.GONE);
-            navigationView.setVisibility(View.VISIBLE);
-        });
+        exitDialog.setOnClickListener(view -> exitDialog.setVisibility(View.GONE));
+        profileIcon.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), ProfileScreen.class)));
     }
 
     public void loadSong(SongsModel song, int songPosition){
@@ -340,19 +324,14 @@ public class MusicPlayerScreen extends AppCompatActivity {
         sendBroadcast(new Intent(MusicPlayerService.PLAY_NEXT_MEDIA));
     }
 
+    public void prevMedia(){
+        sendBroadcast(new Intent(MusicPlayerService.PLAY_PREV_MEDIA));
+    }
+
     protected void checkPermissions(){
-        String[] permissions;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            permissions = new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.MANAGE_EXTERNAL_STORAGE
-            };
-        }else {
-            permissions = new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-            };
-        }
+        String[] permissions = new String[]{
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        };
         for (String permission: permissions) {
             if (!hasPermission(permission)){
                 requestPermission(permission);
@@ -369,22 +348,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Grant ".concat(permission).concat(" from Settings"), Toast.LENGTH_SHORT).show();
         }else {
             requestPermissions(new String[]{permission}, Universal.PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    protected void handleBottomNavigation(int menuItemId){
-        switch (menuItemId){
-            case LOCAL_MUSIC_ICON:
-                header.setVisibility(View.VISIBLE);
-                frameLayout.setVisibility(View.GONE);
-                songsView.setVisibility(View.VISIBLE);
-                break;
-            case ONLINE_MUSIC_ICON:
-                loadFragment(onlineFragment);
-                break;
-            case PROFILE_ICON:
-                loadFragment(profileFragment);
-                break;
         }
     }
 
@@ -405,21 +368,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
                     tab.setText("Playlist");
             }
         }).attach();
-    }
-
-    public void loadFragment(Fragment fragment){
-        if (fragment != currentFragment){
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.player_screen_frame_layout, fragment, null)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .addToBackStack(fragment.toString())
-                    .commit();
-            currentFragment = fragment;
-        }
-        header.setVisibility(View.GONE);
-        songsView.setVisibility(View.GONE);
-        frameLayout.setVisibility(View.VISIBLE);
     }
 
     public void updateMiniPlayer(SongsModel currentSong, int playState){
@@ -463,7 +411,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
         header.setCardBackgroundColor(colorPrimary);
         tabLayout.setBackgroundColor(colorPrimary);
         miniPlayer.setCardBackgroundColor(colorPrimaryVariant);
-        navigationView.setBackgroundColor(colorPrimaryVariant);
         exitDialogBody.setBackgroundColor(colorPrimaryVariant);
         exitButton.setBackgroundColor(colorPrimary);
         progressBar.setBackgroundColor(colorPrimaryVariant);

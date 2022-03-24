@@ -22,11 +22,10 @@ import ng.com.binkap.vibestar.services.MusicPlayerService;
 
 public class ControlScreenAdapter extends RecyclerView.Adapter<ControlScreenAdapter.ViewHolder> {
 
-    LinkedList<SongsModel> songList = new LinkedList<>();
+    LinkedList<SongsModel> songList;
 
     public ControlScreenAdapter(LinkedList<SongsModel> songs) {
-        songList.clear();
-        songList.addAll(songs);
+        this.songList = new LinkedList<>(songs);
     }
 
     @NonNull

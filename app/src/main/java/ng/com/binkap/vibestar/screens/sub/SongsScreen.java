@@ -204,74 +204,55 @@ public class SongsScreen extends AppCompatActivity {
 
     private void setHeaderImage(){
         if (usingAlbums){
-            Utils.with(getApplicationContext())
-                    .load(album.getAlbumArt())
-                    .error(R.drawable.vibe_star_logo_transparent_bg)
-                    .build()
-                    .resize(1000, 600)
-                    .drawable();
-            headerImage.setBackground(Utils.getDrawable());
-           Palette palette = Palette.from(Utils.getBitmap())
-                   .generate();
-            int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
-                    getColor(R.color.colorPrimary), 0.51f);
-            int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
-                    getColor(R.color.colorPrimaryVariant), 0.2f);
-            mainBody.setBackgroundColor(darkenColor);
-           header.setBackgroundColor(darkenColor);
-           toolBar.setBackgroundColor(brightColor);
-           setStatusBarColor(darkenColor);
+            useFirst();
         }else if (usingArtist){
             if (Integer.parseInt(artist.getAlbums()) == 1){
-                Utils.with(getApplicationContext())
-                        .load(songList.getFirst().getThumbnail())
-                        .error(R.drawable.vibe_star_logo_transparent_bg)
-                        .build()
-                        .resize(1000, 600)
-                        .drawable();
-                headerImage.setBackground(Utils.getDrawable());
-                Palette palette = Palette.from(Utils.getBitmap())
-                        .generate();
-                int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
-                        getColor(R.color.colorPrimary), 0.51f);
-                int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
-                        getColor(R.color.colorPrimaryVariant), 0.2f);
-                mainBody.setBackgroundColor(darkenColor);
-                header.setBackgroundColor(darkenColor);
-                toolBar.setBackgroundColor(brightColor);
-                setStatusBarColor(darkenColor);
+                useFirst();
             }else {
-                headerImage.setBackgroundResource(R.drawable.vibe_star_logo_transparent_bg);
-                header.setBackgroundColor(getColor(R.color.colorPrimary));
-                applySettings();
+                useRandom();
             }
         }else if (usingPLayList){
-            Utils.with(getApplicationContext())
-                    .load(songList.get(MusicPlayerService.random.nextInt(songList.size())).getThumbnail())
-                    .error(R.drawable.vibe_star_logo_transparent_bg)
-                    .build()
-                    .resize(1000, 600);
-            Palette palette = Palette.from(Utils.getBitmap())
-                    .generate();
-            int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
-                    getColor(R.color.colorPrimary), 0.51f);
-            int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
-                    getColor(R.color.colorPrimaryVariant), 0.2f);
-            mainBody.setBackgroundColor(darkenColor);
-            header.setBackgroundColor(darkenColor);
-            toolBar.setBackgroundColor(brightColor);
-            headerImage.setBackgroundResource(R.drawable.vibe_star_logo_transparent_bg);
-            setStatusBarColor(darkenColor);
+            useRandom();
         }
     }
 
-    private void applySettings(){
-        int colorPrimary = UserSettings.getColorPrimary(getApplicationContext());
-        int colorPrimaryVariant = UserSettings.getColorPrimaryVariant(getApplicationContext());
+    private void useFirst(){
+        Utils.with(getApplicationContext())
+                .load(songList.getFirst().getThumbnail())
+                .error(R.drawable.vibe_star_logo_transparent_bg)
+                .build()
+                .resize(1000, 600)
+                .drawable();
+        headerImage.setBackground(Utils.getDrawable());
+        Palette palette = Palette.from(Utils.getBitmap())
+                .generate();
+        int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
+                getColor(R.color.colorPrimary), 0.51f);
+        int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
+                getColor(R.color.colorPrimaryVariant), 0.2f);
+        mainBody.setBackgroundColor(darkenColor);
+        header.setBackgroundColor(darkenColor);
+        toolBar.setBackgroundColor(brightColor);
+        setStatusBarColor(darkenColor);
+    }
 
-        mainBody.setBackgroundColor(colorPrimary);
-        toolBar.setBackgroundColor(colorPrimaryVariant);
-        setStatusBarColor(colorPrimary);
+    private void useRandom(){
+        Utils.with(getApplicationContext())
+                .load(songList.get(MusicPlayerService.random.nextInt(songList.size())).getThumbnail())
+                .error(R.drawable.vibe_star_logo_transparent_bg)
+                .build()
+                .resize(1000, 600);
+        Palette palette = Palette.from(Utils.getBitmap())
+                .generate();
+        int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
+                getColor(R.color.colorPrimary), 0.51f);
+        int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
+                getColor(R.color.colorPrimaryVariant), 0.2f);
+        mainBody.setBackgroundColor(darkenColor);
+        header.setBackgroundColor(darkenColor);
+        toolBar.setBackgroundColor(brightColor);
+        headerImage.setBackgroundResource(R.drawable.vibe_star_logo_transparent_bg);
+        setStatusBarColor(darkenColor);
     }
 
     public void setStatusBarColor(int color){

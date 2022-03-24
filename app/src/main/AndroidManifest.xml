@@ -7,10 +7,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
     <uses-permission
         android:name="android.permission.MEDIA_CONTENT_CONTROL"
         tools:ignore="ProtectedPermissions" />
@@ -23,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VibeStar"
         tools:ignore="AllowBackup">
+        <activity
+            android:name=".screens.ProfileScreen"
+            android:exported="false" />
         <activity
             android:name=".screens.sub.SongsScreen"
             android:exported="false" />

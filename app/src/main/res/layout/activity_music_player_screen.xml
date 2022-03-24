@@ -44,19 +44,21 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_round_search_24"
-                android:layout_alignParentEnd="true"
+                android:layout_toStartOf="@id/player_screen_profile_icon"
                 android:layout_marginEnd="10dp"
+                android:layout_centerVertical="true"
+                app:tint="?attr/colorOnPrimary" />
+            <ImageView
+                android:id="@+id/player_screen_profile_icon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_round_person_24"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
                 android:layout_centerVertical="true"
                 app:tint="?attr/colorOnPrimary" />
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
-    <FrameLayout
-        android:id="@+id/player_screen_frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/player_screen_bottom_player"
-        app:layout_constraintTop_toBottomOf="@+id/player_screen_header" />
-
     <RelativeLayout
         android:id="@+id/player_screen_songs_view"
         android:layout_width="match_parent"
@@ -86,12 +88,23 @@
             android:layout_below="@id/player_screen_tab_layout" />
     </RelativeLayout>
 
+    <androidx.core.widget.ContentLoadingProgressBar
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:id="@+id/mini_player_song_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:progressTint="?attr/colorOnPrimary"
+        android:background="?attr/colorPrimaryVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/player_screen_bottom_player"
+        />
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/player_screen_bottom_player"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toTopOf="@id/mini_player_song_progress_bar"
-        app:cardCornerRadius="5dp"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
         android:visibility="gone"
         >
@@ -102,8 +115,8 @@
             android:backgroundTint="@android:color/transparent"
             >
             <com.google.android.material.circularreveal.cardview.CircularRevealCardView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 app:cardElevation="2dp"
                 app:cardCornerRadius="15dp"
                 android:id="@+id/mini_player_song_art_cover_frame"
@@ -126,7 +139,6 @@
                 android:id="@+id/mini_player_song_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/lorem_text"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="17sp"
                 android:textAlignment="textStart"
@@ -134,7 +146,7 @@
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/mini_player_song_art_cover_frame"
@@ -183,25 +195,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-    <androidx.core.widget.ContentLoadingProgressBar
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:id="@+id/mini_player_song_progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:progressTint="?attr/colorOnPrimary"
-        android:background="?attr/colorPrimaryVariant"
-        app:layout_constraintBottom_toTopOf="@id/player_screen_bottom_navigation"
-        android:visibility="gone"
-        />
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/player_screen_bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:itemIconTint="?attr/colorOnPrimary"
-        app:itemTextColor="?attr/colorOnPrimary"
-        app:menu="@menu/player_screen_bottom_menu"
-        app:layout_constraintBottom_toBottomOf="parent"
-       />
     <RelativeLayout
         android:id="@+id/music_player_screen_exit_dialog"
         android:layout_width="match_parent"
@@ -212,7 +205,7 @@
         <RelativeLayout
             android:id="@+id/music_player_screen_exit_dialog_body"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="350dp"
             android:layout_alignParentBottom="true"
             >
             <com.google.android.material.button.MaterialButton
@@ -224,6 +217,7 @@
                 app:strokeWidth="3dp"
                 app:strokeColor="?attr/colorOnPrimary"
                 android:text="Exit"
+                android:layout_alignParentBottom="true"
                 tools:ignore="HardcodedText" />
         </RelativeLayout>
     </RelativeLayout>

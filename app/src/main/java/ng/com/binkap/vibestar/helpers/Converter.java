@@ -8,8 +8,13 @@ public class Converter {
 
     @SuppressLint("DefaultLocale")
     public static String convertTime(String time){
-        long millis = Long.parseLong(time);
         String value;
+        long millis = 1L;
+        try {
+            millis = Long.parseLong(time);
+        }catch (NumberFormatException ignored){
+
+        }
         if (millis >= 3600000){
             value = String.format("%02d:%02d:%02d",
                     TimeUnit.MILLISECONDS.toHours(millis),

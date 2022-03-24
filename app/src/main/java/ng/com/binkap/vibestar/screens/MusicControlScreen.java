@@ -265,7 +265,11 @@ public class MusicControlScreen extends AppCompatActivity {
         }
         songInfo = songData;
         totalTimeProgress.setText(Converter.convertTime(songData.getDuration()));
-        seekBar.setMax(Integer.parseInt(songData.getDuration()));
+        try {
+            seekBar.setMax(Integer.parseInt(songData.getDuration()));
+        }catch (NumberFormatException ignored){
+
+        }
         songName.setText(songData.getTitle());
         songArtist.setText(songData.getArtist());
         miniSongName.setText(songData.getTitle());
