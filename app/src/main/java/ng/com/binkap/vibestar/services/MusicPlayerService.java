@@ -129,6 +129,8 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
 
     public static  Stack<SongsModel> shuffleDequeued = new Stack<>();
 
+    public static Stack<SongsModel> shuffleEnqueued = new Stack<>();
+
     public static SongsModel currentSong;
 
     public static int currentSongIndex;
@@ -684,12 +686,17 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
                     }
                     currentSong = allSongsLIst.get(currentSongIndex);
                 }else if (CURRENT_PLAY_MODE == PLAY_MODE_SHUFFLE){
-                    if (shuffleQueued.isEmpty()){
+                    if (shuffleEnqueued.isEmpty()){
+                        if (shuffleQueued.isEmpty()){
                         cleanShuffleQueue();
                         buildShuffleQueue(allSongsLIst);
                     }
                     shuffleDequeued.push(currentSong);
                     currentSong = shuffleQueued.poll();
+                    }else {
+                        shuffleDequeued.push(currentSong);
+                        currentSong = shuffleEnqueued.pop();
+                    }
                 }else if (CURRENT_PLAY_MODE == PLAY_MODE_LOOP_SINGLE && fromUser){
                     if (allSongsLIst.isEmpty()){
                         updateSongsList(MusicPlayerScreen.allSongs, -1);
@@ -726,6 +733,7 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
                 cleanShuffleDequeue();
                 buildShuffleDequeue();
             }
+            shuffleEnqueued.push(currentSong);
             currentSong = shuffleDequeued.pop();
         }
         prepareMedia();
@@ -829,6 +837,9 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
             if (!shuffleDequeued.isEmpty()){
                 shuffleDequeued.remove(song);
             }
+            if (!shuffleEnqueued.isEmpty()){
+                shuffleEnqueued.remove(song);
+            }
         }
         allSongsLIst.clear();
         allSongsLIst = null;
@@ -839,7 +850,7 @@ public class MusicPlayerService extends MediaBrowserService implements AudioMana
     public static void updateMiniPlayer(int playState){
             if (MEDIA_PLAYER_INITIALIZED){
                 if (MusicControlScreen.getMusicControlScreen() != null){
-                    MusicControlScreen.getMusicControlScreen().updateScreen(currentSong, playState);
+                    MusicControlScreen.getMusicControlScreen().updateScreen(currentSong, playState, playState == PlaybackState.STATE_PLAYING);
                 }
                 MusicPlayerScreen.getMusicPlayerScreen().updateMiniPlayer(currentSong, playState);
             }

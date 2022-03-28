@@ -25,10 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         versionName = findViewById(R.id.app_splash_version_name);
         versionName.setText("v".concat(BuildConfig.VERSION_NAME));
-        new Handler().postDelayed(() -> {
-                    startActivity(new Intent(getApplicationContext(), MusicPlayerScreen.class));
-                    finish();
-                }
-                , 1000);
+        startActivity(new Intent(getApplicationContext(), MusicPlayerScreen.class));
+        finish();
     }
 }

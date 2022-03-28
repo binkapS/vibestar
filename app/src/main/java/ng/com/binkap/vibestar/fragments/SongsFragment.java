@@ -1,6 +1,7 @@
 package ng.com.binkap.vibestar.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import ng.com.binkap.vibestar.adapters.SongsAdapter;
 import ng.com.binkap.vibestar.helpers.Sorts;
 import ng.com.binkap.vibestar.helpers.UserSettings;
 import ng.com.binkap.vibestar.models.SongsModel;
+import ng.com.binkap.vibestar.screens.MusicControlScreen;
 import ng.com.binkap.vibestar.screens.MusicPlayerScreen;
 import ng.com.binkap.vibestar.services.MusicPlayerService;
 
@@ -66,8 +68,6 @@ public class SongsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setContentIds(view);
-        Sorts.sortSongsList(MusicPlayerScreen.allSongs, UserSettings.getSongsSortBy(getContext()),
-                UserSettings.getSongsSortOrder(getContext()), getContext());
         bindRecycler();
     }
 
@@ -169,11 +169,16 @@ public class SongsFragment extends Fragment {
         UserSettings.setPlayMode(MusicPlayerService.PLAY_MODE_SHUFFLE, getContext());
         MusicPlayerService.buildShuffleQueue(MusicPlayerScreen.allSongs);
         MusicPlayerService.updateSongsList(MusicPlayerScreen.allSongs, -1);
+        MusicControlScreen.setSongInfo(songData);
+        MusicControlScreen.updatePlayList(MusicPlayerService.allSongsLIst);
+        startActivity(new Intent(getContext(), MusicControlScreen.class));
     }
 
     @SuppressLint("SetTextI18n")
     public void bindRecycler(){
         if (MusicPlayerScreen.allSongs.size() > 0){
+            Sorts.sortSongsList(MusicPlayerScreen.allSongs, UserSettings.getSongsSortBy(getContext()),
+                    UserSettings.getSongsSortOrder(getContext()), getContext());
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
             recyclerView.setAdapter(new SongsAdapter(MusicPlayerScreen.allSongs));
             MusicPlayerService.updateSongsList(MusicPlayerScreen.allSongs, -1);

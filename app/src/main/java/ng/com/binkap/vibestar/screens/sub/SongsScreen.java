@@ -32,6 +32,7 @@ import ng.com.binkap.vibestar.helpers.Utils;
 import ng.com.binkap.vibestar.models.AlbumsModel;
 import ng.com.binkap.vibestar.models.ArtistsModel;
 import ng.com.binkap.vibestar.models.SongsModel;
+import ng.com.binkap.vibestar.screens.MusicControlScreen;
 import ng.com.binkap.vibestar.screens.MusicPlayerScreen;
 import ng.com.binkap.vibestar.screens.SearchScreen;
 import ng.com.binkap.vibestar.services.MusicPlayerService;
@@ -188,6 +189,9 @@ public class SongsScreen extends AppCompatActivity {
         UserSettings.setPlayMode(MusicPlayerService.PLAY_MODE_SHUFFLE, getApplicationContext());
         MusicPlayerService.buildShuffleQueue(songList);
         MusicPlayerService.updateSongsList(songList, -1);
+        MusicControlScreen.setSongInfo(songData);
+        MusicControlScreen.updatePlayList(songList);
+        startActivity(new Intent(getApplicationContext(), MusicControlScreen.class));
     }
 
     @SuppressLint("SetTextI18n")
@@ -226,10 +230,12 @@ public class SongsScreen extends AppCompatActivity {
         headerImage.setBackground(Utils.getDrawable());
         Palette palette = Palette.from(Utils.getBitmap())
                 .generate();
-        int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
-                getColor(R.color.colorPrimary), 0.51f);
-        int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
-                getColor(R.color.colorPrimaryVariant), 0.2f);
+        int primaryColor = UserSettings.getColorPrimary(getApplicationContext());
+        int primaryColorVariant = UserSettings.getColorPrimaryVariant(getApplicationContext());
+        int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(primaryColor
+        ), primaryColor, 0.51f);
+        int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(primaryColorVariant),
+                primaryColorVariant, 0.2f);
         mainBody.setBackgroundColor(darkenColor);
         header.setBackgroundColor(darkenColor);
         toolBar.setBackgroundColor(brightColor);
@@ -244,10 +250,12 @@ public class SongsScreen extends AppCompatActivity {
                 .resize(1000, 600);
         Palette palette = Palette.from(Utils.getBitmap())
                 .generate();
-        int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
-                getColor(R.color.colorPrimary), 0.51f);
-        int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
-                getColor(R.color.colorPrimaryVariant), 0.2f);
+        int primaryColor = UserSettings.getColorPrimary(getApplicationContext());
+        int primaryColorVariant = UserSettings.getColorPrimaryVariant(getApplicationContext());
+        int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(primaryColor
+        ), primaryColor, 0.51f);
+        int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(primaryColorVariant),
+                primaryColorVariant, 0.2f);
         mainBody.setBackgroundColor(darkenColor);
         header.setBackgroundColor(darkenColor);
         toolBar.setBackgroundColor(brightColor);

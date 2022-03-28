@@ -109,11 +109,15 @@ public class MusicPlayerScreen extends AppCompatActivity {
             MediaStore.Audio.Media.DURATION
     };
 
+    String[] permissions = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
     Cursor cursor;
 
     String songsSelection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
 
-    public static LinkedList<SongsModel> allSongs;
+    public static LinkedList<SongsModel> allSongs = new LinkedList<>();
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -131,17 +135,11 @@ public class MusicPlayerScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player_screen);
+        setContentIds();
         checkPermissions();
         musicPlayerScreen = this;
-        setContentIds();
-        if (!SONGS_LIST_INITIALIZED){
-            scanLoadMusic();
-            if (hasLastSongPlayed()){
-                setResumeMediaInfo();
-            }
-        }
-        bindViewPager();
-       runOnUiThread(new Runnable() {
+        setUpScreenIfReady();
+        runOnUiThread(new Runnable() {
            @Override
            public void run() {
                if (MusicPlayerService.mediaPlayer.isPlaying()){
@@ -150,6 +148,21 @@ public class MusicPlayerScreen extends AppCompatActivity {
                new Handler().postDelayed(this, 1000);
            }
        });
+    }
+
+    protected void setUpScreenIfReady(){
+        while (!permissionsGranted()){
+            checkPermissions();
+        }
+        if (permissionsGranted()){
+            if (!SONGS_LIST_INITIALIZED){
+                scanLoadMusic();
+                if (hasLastSongPlayed()){
+                    setResumeMediaInfo();
+                }
+            }
+            bindViewPager();
+        }
     }
 
     @Override
@@ -175,6 +188,8 @@ public class MusicPlayerScreen extends AppCompatActivity {
     }
 
     public void scanLoadMusic(){
+        allSongs.clear();
+        allSongs = null;
         allSongs = new LinkedList<>();
         cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songsProjection,
                 songsSelection, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
@@ -329,23 +344,36 @@ public class MusicPlayerScreen extends AppCompatActivity {
     }
 
     protected void checkPermissions(){
-        String[] permissions = new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE
-        };
         for (String permission: permissions) {
-            if (!hasPermission(permission)){
+            if (permissionDenied(permission)){
                 requestPermission(permission);
             }
         }
     }
 
-    protected boolean hasPermission(String permission){
-        return checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    protected boolean permissionDenied(String permission){
+        return checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    protected boolean permissionsGranted(){
+        for (String permission: permissions) {
+            if (permissionDenied(permission)){
+                return false;
+            }
+        }
+        return true;
     }
 
     protected void requestPermission(String permission){
         if (shouldShowRequestPermissionRationale(permission)){
-            Toast.makeText(getApplicationContext(), "Grant ".concat(permission).concat(" from Settings"), Toast.LENGTH_SHORT).show();
+            String message;
+            if (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)){
+                message = "Allow Read Storage Permission From Settings To Continue";
+            }else {
+                message = "";
+            }
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            finishAndRemoveTask();
         }else {
             requestPermissions(new String[]{permission}, Universal.PERMISSIONS_REQUEST_CODE);
         }

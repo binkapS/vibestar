@@ -35,10 +35,20 @@
             />
     </RelativeLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/profile_screen_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/profile_screen_header"
+        app:layout_constraintBottom_toTopOf="@id/profile_screen_device_info"
+        />
+
     <RelativeLayout
         android:id="@+id/profile_screen_device_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_screen_recycler"
         >
         <TextView
             android:id="@+id/profile_screen_app_version"

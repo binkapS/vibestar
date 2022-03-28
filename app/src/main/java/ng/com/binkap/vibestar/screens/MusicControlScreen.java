@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import ng.com.binkap.vibestar.R;
 import ng.com.binkap.vibestar.adapters.ControlScreenAdapter;
 import ng.com.binkap.vibestar.helpers.Converter;
+import ng.com.binkap.vibestar.helpers.UserSettings;
 import ng.com.binkap.vibestar.listeners.OnTouchListener;
 import ng.com.binkap.vibestar.helpers.Utils;
 import ng.com.binkap.vibestar.models.SongsModel;
@@ -72,9 +73,9 @@ public class MusicControlScreen extends AppCompatActivity {
         setContentView(R.layout.activity_music_control_screen);
         setContentIds();
         if (MusicPlayerService.mediaPlayer.isPlaying()){
-            updateScreen(songInfo, PlaybackState.STATE_PLAYING);
+            updateScreen(songInfo, PlaybackState.STATE_PLAYING, true);
         }else{
-            updateScreen(songInfo, PlaybackState.STATE_PAUSED);
+            updateScreen(songInfo, PlaybackState.STATE_PAUSED, true);
         }
         updatePlayModeButton();
         updateFavoriteButton();
@@ -178,13 +179,11 @@ public class MusicControlScreen extends AppCompatActivity {
 
             @Override
             public void onSwipeDown() {
-                super.onSwipeDown();
                 playListToggleClicked();
             }
 
             @Override
             public void onSwipeUp() {
-                super.onSwipeUp();
                 playListToggleClicked();
             }
 
@@ -255,7 +254,7 @@ public class MusicControlScreen extends AppCompatActivity {
         currentPLayList.addAll(list);
     }
 
-    public void updateScreen(SongsModel songData, int playState){
+    public void updateScreen(SongsModel songData, int playState, boolean updateAllScreen){
         if (playState == PlaybackState.STATE_PAUSED){
             playPauseButton.setImageResource(R.drawable.ic_round_play_arrow_24);
             miniPlayPauseBtn.setImageResource(R.drawable.ic_round_play_arrow_24);
@@ -263,40 +262,43 @@ public class MusicControlScreen extends AppCompatActivity {
             playPauseButton.setImageResource(R.drawable.ic_round_pause_24);
             miniPlayPauseBtn.setImageResource(R.drawable.ic_round_pause_24);
         }
-        songInfo = songData;
-        totalTimeProgress.setText(Converter.convertTime(songData.getDuration()));
-        try {
-            seekBar.setMax(Integer.parseInt(songData.getDuration()));
-        }catch (NumberFormatException ignored){
+        if (updateAllScreen){
+            songInfo = songData;
+            totalTimeProgress.setText(Converter.convertTime(songData.getDuration()));
+            try {
+                seekBar.setMax(Integer.parseInt(songData.getDuration()));
+            }catch (NumberFormatException ignored){
 
+            }
+            songName.setText(songData.getTitle());
+            songArtist.setText(songData.getArtist());
+            miniSongName.setText(songData.getTitle());
+            Glide.with(getApplicationContext())
+                    .asBitmap()
+                    .load(songData.getThumbnail())
+                    .error(R.drawable.vibe_star_logo_transparent_bg)
+                    .centerCrop()
+                    .into(miniArtCover);
+            Utils.with(getApplicationContext())
+                    .load(songData.getThumbnail())
+                    .error(R.drawable.vibe_star_logo_transparent_bg)
+                    .build()
+                    .resize(1000, 1000)
+                    .into(songArtCover);
+            Palette palette = Palette.from(Utils.getBitmap())
+                    .generate();
+            int primaryColor = UserSettings.getColorPrimary(getApplicationContext());
+            int primaryColorVariant = UserSettings.getColorPrimaryVariant(getApplicationContext());
+            int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(primaryColor
+            ), primaryColor, 0.51f);
+            int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(primaryColorVariant),
+                    primaryColorVariant, 0.2f);
+            mainBody.setBackgroundColor(darkenColor);
+            setStatusBarColor(darkenColor);
+            playPauseBackground.setCardBackgroundColor(brightColor);
+            footer.setCardBackgroundColor(brightColor);
+            updateFavoriteButton();
         }
-        songName.setText(songData.getTitle());
-        songArtist.setText(songData.getArtist());
-        miniSongName.setText(songData.getTitle());
-        playlist.smoothScrollToPosition(currentPLayList.indexOf(songData));
-        Glide.with(getApplicationContext())
-                .asBitmap()
-                .load(songData.getThumbnail())
-                .error(R.drawable.vibe_star_logo_transparent_bg)
-                .centerCrop()
-                .into(miniArtCover);
-        Utils.with(getApplicationContext())
-                .load(songData.getThumbnail())
-                .error(R.drawable.vibe_star_logo_transparent_bg)
-                .build()
-                .resize(1000, 1000)
-                .into(songArtCover);
-        Palette palette = Palette.from(Utils.getBitmap())
-                .generate();
-        int darkenColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimary)),
-                getColor(R.color.colorPrimary), 0.51f);
-        int brightColor = Utils.getDarkenColor(palette.getDarkVibrantColor(getColor(R.color.colorPrimaryVariant)),
-                getColor(R.color.colorPrimaryVariant), 0.2f);
-        mainBody.setBackgroundColor(darkenColor);
-        setStatusBarColor(darkenColor);
-        playPauseBackground.setCardBackgroundColor(brightColor);
-        footer.setCardBackgroundColor(brightColor);
-        updateFavoriteButton();
     }
 
     public void setStatusBarColor(int color){

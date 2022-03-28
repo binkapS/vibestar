@@ -22,14 +22,14 @@
              >
             <ImageView
                 android:id="@+id/songs_fragment_tool_bar_play"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="10dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_play_circle_filled_24"
+                android:src="@drawable/ic_round_shuffle_24"
                 app:tint="?attr/colorOnPrimary" />
             <TextView
                 android:id="@+id/songs_fragment_tool_shuffle_text"

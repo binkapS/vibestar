@@ -20,6 +20,15 @@
         android:theme="@style/Theme.VibeStar"
         tools:ignore="AllowBackup">
         <activity
+            android:name=".screens.sub.AboutScreen"
+            android:exported="false" />
+        <activity
+            android:name=".screens.sub.FeedBackScreen"
+            android:exported="false" />
+        <activity
+            android:name=".screens.sub.SettingsScreen"
+            android:exported="false" />
+        <activity
             android:name=".screens.ProfileScreen"
             android:exported="false" />
         <activity
