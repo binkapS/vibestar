@@ -6,14 +6,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.session.PlaybackState;
 import android.net.Uri;
@@ -25,7 +23,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -36,11 +33,11 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import ng.com.binkap.vibestar.R;
 import ng.com.binkap.vibestar.adapters.ViewPagerAdapter;
-import ng.com.binkap.vibestar.helpers.Universal;
 import ng.com.binkap.vibestar.helpers.UsageInfo;
 import ng.com.binkap.vibestar.helpers.UserSettings;
 import ng.com.binkap.vibestar.listeners.OnTouchListener;
@@ -109,10 +106,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
             MediaStore.Audio.Media.DURATION
     };
 
-    String[] permissions = new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE
-    };
-
     Cursor cursor;
 
     String songsSelection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
@@ -136,9 +129,14 @@ public class MusicPlayerScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player_screen);
         setContentIds();
-        checkPermissions();
         musicPlayerScreen = this;
-        setUpScreenIfReady();
+        if (!SONGS_LIST_INITIALIZED){
+            scanLoadMusic();
+            if (hasLastSongPlayed()){
+                setResumeMediaInfo();
+            }
+        }
+        bindViewPager();
         runOnUiThread(new Runnable() {
            @Override
            public void run() {
@@ -148,21 +146,6 @@ public class MusicPlayerScreen extends AppCompatActivity {
                new Handler().postDelayed(this, 1000);
            }
        });
-    }
-
-    protected void setUpScreenIfReady(){
-        while (!permissionsGranted()){
-            checkPermissions();
-        }
-        if (permissionsGranted()){
-            if (!SONGS_LIST_INITIALIZED){
-                scanLoadMusic();
-                if (hasLastSongPlayed()){
-                    setResumeMediaInfo();
-                }
-            }
-            bindViewPager();
-        }
     }
 
     @Override
@@ -343,58 +326,17 @@ public class MusicPlayerScreen extends AppCompatActivity {
         sendBroadcast(new Intent(MusicPlayerService.PLAY_PREV_MEDIA));
     }
 
-    protected void checkPermissions(){
-        for (String permission: permissions) {
-            if (permissionDenied(permission)){
-                requestPermission(permission);
-            }
-        }
-    }
-
-    protected boolean permissionDenied(String permission){
-        return checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED;
-    }
-
-    protected boolean permissionsGranted(){
-        for (String permission: permissions) {
-            if (permissionDenied(permission)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    protected void requestPermission(String permission){
-        if (shouldShowRequestPermissionRationale(permission)){
-            String message;
-            if (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)){
-                message = "Allow Read Storage Permission From Settings To Continue";
-            }else {
-                message = "";
-            }
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-            finishAndRemoveTask();
-        }else {
-            requestPermissions(new String[]{permission}, Universal.PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
     protected void bindViewPager(){
         viewPager2.setAdapter(new ViewPagerAdapter(this));
+        viewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        String[] titles = new String[]{
+               "Songs",
+               "Albums",
+               "Artist",
+               "Playlists"
+        };
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
-            switch (position){
-                case 0:
-                    tab.setText("Songs");
-                    break;
-                case 1:
-                    tab.setText("Albums");
-                    break;
-                case 2:
-                    tab.setText("Artists");
-                    break;
-                case 3:
-                    tab.setText("Playlist");
-            }
+            tab.setText(titles[position]);
         }).attach();
     }
 

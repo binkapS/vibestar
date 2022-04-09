@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import java.util.ArrayList;
+
 import ng.com.binkap.vibestar.fragments.AlbumsFragment;
 import ng.com.binkap.vibestar.fragments.ArtistsFragment;
 import ng.com.binkap.vibestar.fragments.PlayListsFragment;
@@ -12,44 +14,24 @@ import ng.com.binkap.vibestar.fragments.SongsFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
-    public static final int TAB_COUNTS = 4;
-
-    SongsFragment songsFragment = SongsFragment.newInstance();
-
-    AlbumsFragment albumsFragment = AlbumsFragment.newInstance();
-
-    PlayListsFragment playListsFragment = PlayListsFragment.newInstance();
-
-    ArtistsFragment artistsFragment = ArtistsFragment.newInstance();
-
-    Fragment fragment;
+    ArrayList<Fragment> fragments = new ArrayList<>();
 
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
+        fragments.add(SongsFragment.newInstance());
+        fragments.add(AlbumsFragment.newInstance());
+        fragments.add(ArtistsFragment.newInstance());
+        fragments.add(PlayListsFragment.newInstance());
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position){
-            case 0:
-                fragment = songsFragment;
-                break;
-            case 1:
-                fragment = albumsFragment;
-              break;
-            case 2:
-                fragment = artistsFragment;
-                break;
-            case 3:
-                fragment = playListsFragment;
-                break;
-        }
-        return fragment;
+        return fragments.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return TAB_COUNTS;
+        return fragments.size();
     }
 }

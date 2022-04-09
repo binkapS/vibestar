@@ -83,7 +83,7 @@ public class MusicControlScreen extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (MusicPlayerService.mediaPlayer.isPlaying()){
+                if (MusicPlayerService.mediaPlayer != null && MusicPlayerService.mediaPlayer.isPlaying()){
                     seekBar.setProgress(MusicPlayerService.mediaPlayer.getCurrentPosition());
                     currentTimeProgress.setText(Converter.convertTime(String.valueOf(MusicPlayerService.mediaPlayer.getCurrentPosition())));
                 }

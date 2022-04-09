@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/drawable/ic_twotone_folder_selected_open_24.xml" value="0.13094462540716612" />
         <entry key="app/src/main/res/drawable/ic_twotone_online_selected_24.xml" value="0.13094462540716612" />
         <entry key="app/src/main/res/layout/activity_about_screen.xml" value="0.19322916666666667" />
+        <entry key="app/src/main/res/layout/activity_exit.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_feed_back_screen.xml" value="0.19322916666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.12084690553745929" />
         <entry key="app/src/main/res/layout/activity_music_control_screen.xml" value="0.1" />

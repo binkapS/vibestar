@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.circularreveal.cardview.CircularRevealCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -27,6 +29,7 @@ import ng.com.binkap.vibestar.R;
 import ng.com.binkap.vibestar.adapters.PlaylistsSongsAdapter;
 import ng.com.binkap.vibestar.adapters.SongsAdapter;
 import ng.com.binkap.vibestar.database.PlaylistsData;
+import ng.com.binkap.vibestar.helpers.Sorts;
 import ng.com.binkap.vibestar.helpers.UserSettings;
 import ng.com.binkap.vibestar.helpers.Utils;
 import ng.com.binkap.vibestar.models.AlbumsModel;
@@ -64,6 +67,10 @@ public class SongsScreen extends AppCompatActivity {
     static ArtistsModel artist;
 
     static String playlist;
+
+    int sortByActiveId;
+
+    String sortByValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +187,57 @@ public class SongsScreen extends AppCompatActivity {
 
     private void sortSongsList(){
 
+        switch (UserSettings.getSongsSortBy(getApplicationContext())){
+            case Sorts.SORT_BY_DATE:
+                sortByActiveId = 1;
+                break;
+            case Sorts.SORT_BY_SIZE:
+                sortByActiveId = 2;
+                break;
+            case Sorts.SORT_BY_DURATION:
+                sortByActiveId = 3;
+                break;
+            default: sortByActiveId = 0;
+        }
+        new MaterialAlertDialogBuilder(getApplicationContext(), R.style.Theme_VibeStar)
+                .setTitle("Sort by")
+                .setSingleChoiceItems(new String[]{
+                        "Name",
+                        "Date",
+                        "Size",
+                        "Duration"
+                }, sortByActiveId, (dialogInterface, i) -> {
+                    switch (i){
+                        case 1:
+                            sortByValue = Sorts.SORT_BY_DATE;
+                            break;
+                        case 2:
+                            sortByValue = Sorts.SORT_BY_SIZE;
+                            break;
+                        case 3:
+                            sortByValue = Sorts.SORT_BY_DURATION;
+                            break;
+                        default: sortByValue = Sorts.SORT_BY_TITLE;
+                    }
+                })
+                .setNegativeButton("Descending", (dialogInterface, i) -> {
+                    if (sortByValue == null){
+                        sortByValue = UserSettings.getSongsSortBy(getApplicationContext());
+                    }
+                    Sorts.sortSongsList(songList, sortByValue, Sorts.SORT_DESCENDING, getApplicationContext());
+                    bindRecycler();
+                    dialogInterface.dismiss();
+                })
+                .setPositiveButton("Ascending", (dialogInterface, i) -> {
+                    if (sortByValue == null){
+                        sortByValue = UserSettings.getSongsSortBy(getApplicationContext());
+                    }
+                    Sorts.sortSongsList(songList, sortByValue, Sorts.SORT_ASCENDING, getApplicationContext());
+                    bindRecycler();
+                    dialogInterface.dismiss();
+                })
+                .setNeutralButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                .create().show();
     }
 
     private void shufflePlayAll(){
